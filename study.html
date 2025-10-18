@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Study Planner | SAT Prep</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f6f9ff;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: #fff;
+      padding: 15px 0;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin-top: 30px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #0066ff;
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      background: #e8f0ff;
+      border: 1px solid #c7dcff;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #0047cc;
+      line-height: 1.6;
+    }
+
+    .day {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #d6e4ff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .day:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 10px rgba(0, 102, 255, 0.1);
+    }
+
+    .day h3 {
+      margin: 0 0 10px;
+      color: #007bff;
+      font-size: 1.1rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    .hours-inputs {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .hours-inputs input {
+      width: 120px;
+      text-align: center;
+    }
+
+    .progress-bar {
+      height: 10px;
+      width: 100%;
+      background: #e9edf9;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #007bff, #66b3ff);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005ad1;
+      transform: translateY(-2px);
+    }
+
+    .reset-btn {
+      background-color: #ff4b5c;
+    }
+
+    .reset-btn:hover {
+      background-color: #d93546;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: #888;
+      font-size: 0.9rem;
+      text-align: center;
+      padding-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>📅 Weekly Study Planner</header>
+
+  <div class="container" id="planner">
+    <h2>Plan, Track & Succeed</h2>
+    <div class="summary">
+      Total Planned Hours: <span id="plannedTotal">0</span> hrs |
+      Completed Hours: <span id="completedTotal">0</span> hrs <br>
+      Weekly Progress: <span id="progressPercent">0%</span>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button id="savePlans">💾 Save Plans</button>
+    <button class="reset-btn" id="resetPlans">🔁 Reset All</button>
+  </div>
+
+  <footer>© 2025 SAT Prep | Weekly Planner Dashboard</footer>
+
+  <script>
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const planner = document.getElementById("planner");
+
+    // Create planner layout
+    daysOfWeek.forEach(day => {
+      const div = document.createElement("div");
+      div.classList.add("day");
+      div.innerHTML = `
+        <h3>${day}</h3>
+        <input type="text" id="${day}-title" placeholder="Study Topic (e.g., Math Practice)" />
+        <textarea id="${day}-details" placeholder="Details (e.g., 2 Reading Passages, 10 Math Questions)"></textarea>
+
+        <div class="hours-inputs">
+          <label>Planned:</label>
+          <input type="number" id="${day}-planned" min="0" step="0.5" value="0" /> hrs
+          <label>Completed:</label>
+          <input type="number" id="${day}-done" min="0" step="0.5" value="0" /> hrs
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-bar-inner" id="${day}-progress"></div>
+        </div>
+      `;
+      planner.appendChild(div);
+    });
+
+    // Load saved data
+    const savedPlans = JSON.parse(localStorage.getItem("weeklyPlansV2")) || {};
+    daysOfWeek.forEach(day => {
+      if (savedPlans[day]) {
+        document.getElementById(`${day}-title`).value = savedPlans[day].title || "";
+        document.getElementById(`${day}-details`).value = savedPlans[day].details || "";
+        document.getElementById(`${day}-planned`).value = savedPlans[day].planned || 0;
+        document.getElementById(`${day}-done`).value = savedPlans[day].done || 0;
+      }
+    });
+
+    function calculateProgress() {
+      let totalPlanned = 0, totalDone = 0;
+      daysOfWeek.forEach(day => {
+        const planned = parseFloat(document.getElementById(`${day}-planned`).value) || 0;
+        const done = parseFloat(document.getElementById(`${day}-done`).value) || 0;
+        totalPlanned += planned;
+        totalDone += done;
+        const progress = document.getElementById(`${day}-progress`);
+        const percent = planned ? Math.min((done / planned) * 100, 100) : 0;
+        progress.style.width = percent + "%";
+      });
+      document.getElementById("plannedTotal").textContent = totalPlanned;
+      document.getElementById("completedTotal").textContent = totalDone;
+      document.getElementById("progressPercent").textContent =
+        totalPlanned ? Math.round((totalDone / totalPlanned) * 100) + "%" : "0%";
+    }
+
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener("input", calculateProgress);
+    });
+    calculateProgress();
+
+    // Save
+    document.getElementById("savePlans").addEventListener("click", () => {
+      const weeklyPlans = {};
+      daysOfWeek.forEach(day => {
+        weeklyPlans[day] = {
+          title: document.getElementById(`${day}-title`).value.trim(),
+          details: document.getElementById(`${day}-details`).value.trim(),
+          planned: parseFloat(document.getElementById(`${day}-planned`).value) || 0,
+          done: parseFloat(document.getElementById(`${day}-done`).value) || 0
+        };
+      });
+      localStorage.setItem("weeklyPlansV2", JSON.stringify(weeklyPlans));
+      alert("✅ Study plan with progress saved successfully!");
+    });
+
+    // Reset
+    document.getElementById("resetPlans").addEventListener("click", () => {
+      if (confirm("Are you sure you want to reset your study planner?")) {
+        localStorage.removeItem("weeklyPlansV2");
+        daysOfWeek.forEach(day => {
+          document.getElementById(`${day}-title`).value = "";
+          document.getElementById(`${day}-details`).value = "";
+          document.getElementById(`${day}-planned`).value = "0";
+          document.getElementById(`${day}-done`).value = "0";
+          document.getElementById(`${day}-progress`).style.width = "0%";
+        });
+        calculateProgress();
+        alert("🔁 Planner reset successfully!");
+      }
+    });
+  </script>
+</body>
+</html>

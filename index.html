@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAT Prep | Login & Sign Up</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+    body{
+      height:100vh;display:flex;align-items:center;justify-content:center;
+      background:#f5f9ff;
+    }
+    .container{
+      position:relative;width:380px;background:#fff;border-radius:15px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden;
+    }
+    .forms{
+      display:flex;width:760px;transition:transform .6s ease;
+    }
+    form{
+      width:380px;padding:40px;
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    h2{text-align:center;margin-bottom:25px;color:#333;}
+    label{font-weight:600;margin-bottom:6px;color:#444;}
+    input{
+      padding:10px 12px;margin-bottom:18px;border:1px solid #ccc;
+      border-radius:8px;font-size:1rem;outline:none;transition:.3s;
+    }
+    input:focus{border-color:#007bff;box-shadow:0 0 5px rgba(0,123,255,.3);}
+    button{
+      padding:10px;border:none;border-radius:8px;
+      background:linear-gradient(135deg,#007bff,#00c6ff);
+      color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;
+    }
+    button:hover{transform:scale(1.03);}
+    .toggle-text{
+      text-align:center;margin-top:15px;color:#555;
+    }
+    .toggle-text span{
+      color:#007bff;cursor:pointer;font-weight:600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="forms" id="forms">
+      <!-- LOGIN -->
+      <form id="loginForm">
+        <h2>Login to SAT Prep</h2>
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="Enter your email" />
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Enter your password" />
+        <button type="submit">Login</button>
+        <p class="toggle-text">Don’t have an account? <span id="showSignup">Sign Up</span></p>
+      </form>
+
+      <!-- SIGNUP -->
+      <form id="signupForm">
+        <h2>Create Account</h2>
+        <label>Full Name</label>
+        <input type="text" name="name" required placeholder="Your name" />
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="Your email" />
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Create a password" />
+        <button type="submit">Sign Up</button>
+        <p class="toggle-text">Already have an account? <span id="showLogin">Login</span></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const forms = document.getElementById("forms");
+    const showSignup = document.getElementById("showSignup");
+    const showLogin = document.getElementById("showLogin");
+
+    showSignup.onclick = () => forms.style.transform = "translateX(-380px)";
+    showLogin.onclick = () => forms.style.transform = "translateX(0)";
+
+    // ---- LOGIN FORM ----
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      // Example redirect after login
+      window.location.href = "Homepage.html";
+    });
+
+    // ---- SIGNUP FORM ----
+    document.getElementById("signupForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      // Send form info to your email using FormSubmit
+      const data = new FormData(this);
+      fetch("https://formsubmit.co/centemalon777@gmail.com", {
+        method: "POST",
+        body: data
+      })
+      .then(() => {
+        alert("Account created successfully!");
+        forms.style.transform = "translateX(0)";
+      });
+    });
+  </script>
+
+</body>
+</html>

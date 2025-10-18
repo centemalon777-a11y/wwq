@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Prep | Study Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+  body { background:#f5f8ff; color:#333; display:flex; flex-direction:column; align-items:center; min-height:100vh;}
+  header { width:100%; background: linear-gradient(135deg, #007bff, #00c6ff); color:white; text-align:center; padding:1.5rem; font-size:1.6rem; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+  .container { max-width:900px; margin:2.5rem auto; background:white; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:2rem; text-align:center;}
+  h2 { color:#0055ff; font-size:1.8rem; margin-bottom:1rem;}
+  p { color:#555; margin-bottom:1.5rem;}
+  .calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap:10px; margin-top:1rem;}
+  .day { padding:1rem; border-radius:10px; background:#e3e8ff; cursor:pointer; transition:0.3s; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .day:hover { background:#cfdfff; transform:scale(1.05);}
+  .day.completed { background:#00b300; color:white;}
+  .day span { font-size:0.9rem; margin-top:5px; }
+  .legend { display:flex; justify-content:center; gap:1rem; margin-top:1rem; font-size:0.9rem;}
+  .legend div { display:flex; align-items:center; gap:5px; }
+  .box { width:15px; height:15px; border-radius:4px; }
+  .studied { background:#00b300; }
+  .not-studied { background:#e3e8ff; }
+  footer { margin-top:3rem; text-align:center; color:white; background: linear-gradient(135deg, #007bff, #00c6ff); padding:1rem; width:100%; font-size:0.9rem;}
+</style>
+</head>
+<body>
+
+<header>📅 Study Calendar / Planner</header>
+
+<div class="container">
+  <h2>Plan Your SAT Study</h2>
+  <p>Click a day to mark it as studied. Track your weekly streak and stay consistent!</p>
+
+  <div class="calendar" id="calendar"></div>
+
+  <div class="legend">
+    <div><div class="box studied"></div> Studied</div>
+    <div><div class="box not-studied"></div> Not Studied</div>
+  </div>
+</div>
+
+<footer>© 2025 SAT Prep | Study Calendar</footer>
+
+<script>
+  const calendar = document.getElementById("calendar");
+
+// Get current month
+const today = new Date();
+const currentMonth = today.getMonth(); // 0 = Jan, 1 = Feb, etc.
+
+// Check last saved month
+const savedMonth = localStorage.getItem("calendarMonth");
+if(savedMonth != currentMonth){
+  // New month -> reset
+  localStorage.setItem("studiedDays", JSON.stringify([]));
+  localStorage.setItem("calendarMonth", currentMonth);
+  localStorage.setItem("streak", 0); // optional reset streak
+}
+
+// Generate a simple 30-day calendar
+for(let i=1; i<=30; i++){
+  const day = document.createElement("div");
+  day.classList.add("day");
+  day.dataset.day = i;
+  day.textContent = i;
+  const span = document.createElement("span");
+  span.textContent = "📖";
+  day.appendChild(span);
+  calendar.appendChild(day);
+
+  // Load saved progress
+  const studiedDays = JSON.parse(localStorage.getItem("studiedDays")) || [];
+  if(studiedDays.includes(i)) day.classList.add("completed");
+
+  // Click to toggle studied
+  day.addEventListener("click", ()=>{
+    let studiedDays = JSON.parse(localStorage.getItem("studiedDays")) || [];
+    if(day.classList.contains("completed")){
+      day.classList.remove("completed");
+      studiedDays = studiedDays.filter(d => d !== i);
+    } else {
+      day.classList.add("completed");
+      studiedDays.push(i);
+    }
+    localStorage.setItem("studiedDays", JSON.stringify(studiedDays));
+
+    // Update streak
+    updateStreak(studiedDays);
+  });
+}
+
+function updateStreak(studiedDays){
+  studiedDays.sort((a,b)=>a-b);
+  let streak = 0;
+  for(let i=0;i<studiedDays.length;i++){
+    if(i===0 || studiedDays[i] === studiedDays[i-1]+1){
+      streak++;
+    } else {
+      streak=1;
+    }
+  }
+  localStorage.setItem("streak", streak);
+}
+
+// Initialize streak on page load
+window.onload = ()=>{
+  const studiedDays = JSON.parse(localStorage.getItem("studiedDays")) || [];
+  updateStreak(studiedDays);
+};
+if(savedMonth != currentMonth){
+  localStorage.setItem("readingProgress", 0);
+  localStorage.setItem("writingProgress", 0);
+  localStorage.setItem("mathProgress", 0);
+  localStorage.setItem("goalProgress", 0);
+}
+
+</script>
+
+</body>
+</html>

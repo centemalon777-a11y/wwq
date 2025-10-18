@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Prep | Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f5f8ff;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      width: 100%;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-container {
+      background: white;
+      margin-top: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 700px;
+      padding: 2rem;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 4px solid #0055ff;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-btn:hover {
+      background: #003ecc;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-card {
+      background: #f0f5ff;
+      border-radius: 12px;
+      padding: 1rem;
+      transition: 0.3s;
+    }
+
+    .stat-card:hover {
+      background: #e0ebff;
+      transform: translateY(-5px);
+    }
+
+    .stat-card h3 {
+      color: #0055ff;
+      font-size: 1.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .edit-name {
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+
+    input[type="text"] {
+      border: 2px solid #0055ff;
+      border-radius: 8px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: white;
+      background: #0055ff;
+      padding: 1rem;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    .streak {
+      color: #ff8800;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>👤 My SAT Prep Profile</header>
+
+  <div class="profile-container">
+    <img id="avatar" class="avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile Avatar">
+    <br>
+    <label for="avatarInput" class="upload-btn">📷 Change Avatar</label>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none">
+
+    <div class="edit-name">
+      <p>👋 Welcome, <span id="usernameDisplay">Student</span></p>
+      <input type="text" id="usernameInput" placeholder="Enter your name" oninput="saveName()">
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3 id="streakCount" class="streak">🔥 0</h3>
+        <p>Day Streak</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="studyTime">0h</h3>
+        <p>Total Study Time</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 SAT Prep | Profile Dashboard</footer>
+
+ <script>
+  const usernameDisplay = document.getElementById("usernameDisplay");
+  const usernameInput = document.getElementById("usernameInput");
+  const streakDisplay = document.getElementById("streakCount");
+
+  function saveName() {
+    localStorage.setItem("username", usernameInput.value);
+    usernameDisplay.textContent = usernameInput.value || "Student";
+  }
+
+  function loadProfileData() {
+    // Load Name
+    const savedName = localStorage.getItem("username");
+    if (savedName) {
+      usernameDisplay.textContent = savedName;
+      usernameInput.value = savedName;
+    }
+
+    // Avatar
+    const savedAvatar = localStorage.getItem("avatarURL");
+    if (savedAvatar) {
+      document.getElementById("avatar").src = savedAvatar;
+    }
+
+    // Load Streak
+    const streak = localStorage.getItem("streak") || 0;
+    streakDisplay.textContent = "🔥 " + streak;
+  }
+
+  // Avatar Upload
+  document.getElementById("avatarInput").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("avatar").src = e.target.result;
+        localStorage.setItem("avatarURL", e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Sync when other pages update streak (like dashboard)
+  window.addEventListener("storage", loadProfileData);
+
+  // Initial load
+  window.onload = loadProfileData;
+</script>
+
+</body>
+</html>

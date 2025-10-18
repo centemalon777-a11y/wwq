@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Planner</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #eaf3ff, #f8fbff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      color: #333;
+    }
+
+    h1 {
+      color: #007bff;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    form {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      width: 380px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-top: 18px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056d8;
+    }
+
+    .subjects-container {
+      margin-top: 10px;
+    }
+
+    .subject-input {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .subject-input input {
+      flex: 1;
+    }
+
+    .timetable {
+      width: 90%;
+      max-width: 680px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+      padding: 25px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .timetable h2 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .session {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+
+    .session:last-child {
+      border-bottom: none;
+    }
+
+    .session strong {
+      color: #007bff;
+    }
+
+    .actions {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .reset {
+      background: #ff4747;
+    }
+
+    .reset:hover {
+      background: #e60000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Study Planner</h1>
+
+  <form id="plannerForm">
+    <label>Number of Subjects:</label>
+    <input type="number" id="subjects" min="1" required>
+
+    <label>Total Study Hours:</label>
+    <input type="number" id="studyHours" min="1" required>
+
+    <label>Break Time (minutes):</label>
+    <input type="number" id="breakMinutes" min="5" required>
+
+    <label>Start Time:</label>
+    <input type="time" id="startTime" required>
+
+    <div class="subjects-container" id="subjectsContainer"></div>
+
+    <button type="submit">Generate Timetable</button>
+  </form>
+
+  <div class="timetable" id="timetable" style="display:none;">
+    <h2>Your Study Timetable</h2>
+    <div id="sessions"></div>
+    <div class="actions">
+      <button class="reset" onclick="resetPlanner()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('plannerForm');
+    const subjectsInput = document.getElementById('subjects');
+    const subjectsContainer = document.getElementById('subjectsContainer');
+    const timetableDiv = document.getElementById('timetable');
+    const sessionsDiv = document.getElementById('sessions');
+
+    subjectsInput.addEventListener('input', () => {
+      const num = parseInt(subjectsInput.value);
+      subjectsContainer.innerHTML = '';
+
+      if (num > 0) {
+        for (let i = 1; i <= num; i++) {
+          const div = document.createElement('div');
+          div.classList.add('subject-input');
+          div.innerHTML = `<input type="text" placeholder="Subject ${i} name" required>`;
+          subjectsContainer.appendChild(div);
+        }
+      }
+    });
+
+    function formatTime(hours, minutes) {
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    function generateTimetable(subjectNames, studyHours, breakMinutes, startTime) {
+      const [startHour, startMinute] = startTime.split(':').map(Number);
+      const totalMinutes = studyHours * 60;
+      const sessionTime = Math.floor(totalMinutes / subjectNames.length);
+      const sessions = [];
+
+      let currentHour = startHour;
+      let currentMinute = startMinute;
+
+      for (let i = 0; i < subjectNames.length; i++) {
+        const start = formatTime(currentHour, currentMinute);
+        currentMinute += sessionTime;
+
+        if (currentMinute >= 60) {
+          currentHour += Math.floor(currentMinute / 60);
+          currentMinute %= 60;
+        }
+
+        const end = formatTime(currentHour, currentMinute);
+        sessions.push(`📖 <strong>${subjectNames[i]}</strong>: ${start} - ${end}`);
+
+        currentMinute += breakMinutes;
+        if (currentMinute >= 60) {
+          currentHour += Math.floor(currentMinute / 60);
+          currentMinute %= 60;
+        }
+      }
+
+      return sessions;
+    }
+
+    function displayTimetable(sessions) {
+      sessionsDiv.innerHTML = sessions.map(s => `<div class="session">${s}</div>`).join('');
+      timetableDiv.style.display = 'block';
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const numSubjects = parseInt(document.getElementById('subjects').value);
+      const studyHours = parseFloat(document.getElementById('studyHours').value);
+      const breakMinutes = parseInt(document.getElementById('breakMinutes').value);
+      const startTime = document.getElementById('startTime').value;
+
+      const subjectNames = Array.from(subjectsContainer.querySelectorAll('input')).map(i => i.value || "Subject");
+
+      const sessions = generateTimetable(subjectNames, studyHours, breakMinutes, startTime);
+      displayTimetable(sessions);
+
+      localStorage.setItem('studyPlan', JSON.stringify({ numSubjects, studyHours, breakMinutes, startTime, subjectNames, sessions }));
+    });
+
+    function resetPlanner() {
+      localStorage.removeItem('studyPlan');
+      sessionsDiv.innerHTML = '';
+      timetableDiv.style.display = 'none';
+      subjectsContainer.innerHTML = '';
+      form.reset();
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem('studyPlan');
+      if (saved) {
+        const { numSubjects, studyHours, breakMinutes, startTime, subjectNames, sessions } = JSON.parse(saved);
+        document.getElementById('subjects').value = numSubjects;
+        document.getElementById('studyHours').value = studyHours;
+        document.getElementById('breakMinutes').value = breakMinutes;
+        document.getElementById('startTime').value = startTime;
+
+        subjectsContainer.innerHTML = '';
+        for (let i = 0; i < numSubjects; i++) {
+          const div = document.createElement('div');
+          div.classList.add('subject-input');
+          div.innerHTML = `<input type="text" value="${subjectNames[i]}" required>`;
+          subjectsContainer.appendChild(div);
+        }
+
+        displayTimetable(sessions);
+      }
+    };
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAT Prep | Homepage</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f7f9fc;
+      color: #333;
+    }
+
+    header {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 20px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      margin-left: 25px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #007bff;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 100px 30px;
+      background: linear-gradient(135deg, #007bff, #00c6ff);
+      color: white;
+      border-radius: 0 0 50px 50px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.95;
+    }
+
+    .hero button {
+      margin-top: 25px;
+      background: white;
+      color: #007bff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hero button:hover {
+      background: #e8f2ff;
+      transform: scale(1.05);
+    }
+
+    .section {
+      padding: 80px 10%;
+      text-align: center;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      color: #007bff;
+      margin-bottom: 30px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section h2::after {
+      content: "";
+      width: 50%;
+      height: 3px;
+      background: #00c6ff;
+      position: absolute;
+      left: 25%;
+      bottom: -10px;
+      border-radius: 5px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: left;
+      animation: fadeInUp 1s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0,123,255,0.15);
+    }
+
+    .card h3 {
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    footer {
+      background: #fff;
+      padding: 30px;
+      text-align: center;
+      border-top: 1px solid #eee;
+      margin-top: 50px;
+    }
+
+    footer p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">SAT Prep</div>
+    <nav>
+      <a href="planner.html">Timetable</a>
+      <a href="study.html">Study plan</a>
+      <a href="mps.html">Dashboard</a>
+      <a href="calender.html">Calendar</a>
+      <a href="index.html">Logout</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Ace the SAT with Confidence 💪</h1>
+    <p>Master Reading, Writing, and Math with proven techniques and daily motivation.</p>
+    <button onclick="location.href='#reading'">Start Learning</button>
+  </section>
+
+  <section class="section" id="reading">
+    <h2>Reading & Writing</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Comprehension Skills</h3>
+        <p>Learn to read faster and understand more. Practice analyzing passages, evidence, and tone for higher accuracy.</p>
+      </div>
+      <div class="card">
+        <h3>Grammar & Structure</h3>
+        <p>Master SAT grammar rules, sentence correction, and punctuation usage for the Writing section.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="math">
+    <h2>Math Mastery</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Algebra & Functions</h3>
+        <p>Understand equations, inequalities, and word problems with real SAT examples and strategies.</p>
+      </div>
+      <div class="card">
+        <h3>Advanced Math</h3>
+        <p>Cover quadratic equations, data analysis, and geometry — key to scoring high on the SAT Math section.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="motivation">
+    <h2>Motivation & Mindset</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Stay Consistent</h3>
+        <p>Build a study habit that lasts. Learn focus techniques to stay committed to your SAT goals.</p>
+      </div>
+      <div class="card">
+        <h3>Beat Exam Anxiety</h3>
+        <p>Develop confidence through mindfulness and practice strategies to calm nerves before test day.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="lockin">
+    <h2>Lock-In Tips</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Deep Focus Training</h3>
+        <p>Learn how to ‘lock in’ while studying — block distractions and enter your flow state for maximum productivity.</p>
+      </div>
+      <div class="card">
+        <h3>Effective Study Blocks</h3>
+        <p>Use the Pomodoro technique and time-blocking to balance rest and deep concentration.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 SAT Prep. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
